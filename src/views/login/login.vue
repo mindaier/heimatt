@@ -1,75 +1,227 @@
 <template>
   <div class="login">
-    <van-nav-bar left-arrow></van-nav-bar>
-    <div class="main-box">
+    <van-nav-bar class="navBar">
+      <template #left>
+        <i class="iconfont iconbtn_nav_back"></i>
+      </template>
+    </van-nav-bar>
+    <div class="content">
       <h2 class="title">您好, 请登录</h2>
-      <van-form @submit="onSubmit">
-        <van-field v-model="user.mobile" placeholder="请输入手机号">
-          <template>
-            <van-icon
-              class="iconfont"
-              class-prefix="icon"
-              name="iconxingxing2"
-            />
+      <van-form @submit="onSubmit" ref="myForm">
+        <van-field
+          v-model="user.mobile"
+          placeholder="请输入手机号"
+          name="mobile"
+          autofocus
+          :rules="rules.mobile"
+        >
+          <template #left-icon>
+            <i class="iconfont iconbianzu1"></i>
           </template>
         </van-field>
         <van-field
           v-model="user.code"
-          left-icon="smile-o"
           placeholder="请输入验证码"
           class="codeBtn"
+          :rules="rules.code"
         >
+          <template #left-icon>
+            <i class="iconfont iconyanzhengma"></i>
+          </template>
           <template #button>
-            <van-button size="small">获取验证码</van-button>
+            <van-button size="small" @click="getCode">获取验证码</van-button>
           </template>
         </van-field>
-        <div class="consent">登录即同意《用户使用协议》和《隐私协议》</div>
+        <p class="consent">
+          登录即同意<strong>《用户使用协议》</strong>和<strong>《隐私协议》</strong
+          >
+        </p>
         <div style="margin: 16px;" class="btnSubmit">
-          <van-button round block type="info" native-type="submit"
+          <van-button round block type="danger" native-type="submit" @click="submit"
             >确定</van-button
           >
         </div>
       </van-form>
     </div>
+
+    <div>
+      <i class="iconfont iconxingxing2"></i>
+      <i class="iconfont iconbianzu4"></i>
+      <i class="iconfont iconbianzu2"></i>
+      <i class="iconfont iconbianzu3"></i>
+      <i class="iconfont iconbianzu1"></i>
+      <br />
+      <i class="iconfont iconyanzhengma"></i>
+      <i class="iconfont iconbianzu"></i>
+      <i class="iconfont iconsanjiaoxing2"></i>
+      <i class="iconfont iconbtn_delete_sel"></i>
+      <i class="iconfont iconbtn_delete_nor"></i>
+      <br />
+      <i class="iconfont iconicon_zhengque"></i>
+      <i class="iconfont iconicon_cuowu"></i>
+      <i class="iconfont iconbtn_shuati_fankui"></i>
+      <i class="iconfont iconicon_city"></i>
+      <i class="iconfont iconicon_xueli"></i>
+      <i class="iconfont iconicon_nian"></i>
+      <br />
+      <i class="iconfont iconicon_gongsi_jiaban"></i>
+      <i class="iconfont iconicon_gongsi_sx"></i>
+      <i class="iconfont iconicon_gongsi_time"></i>
+      <i class="iconfont iconicon_gongsi_buchongyiliao"></i>
+      <i class="iconfont iconicon_gongsi_gongfeilvyou"></i>
+      <i class="iconfont iconicon_gongsi_daohang"></i>
+      <br />
+      <i class="iconfont iconicon_pingfen_nor"></i>
+      <i class="iconfont iconicon_pingfen_sel"></i>
+      <i class="iconfont iconicon_gongsi_qingqitijian"></i>
+      <i class="iconfont iconicon_gongsi_nianzhongjiang"></i>
+      <i class="iconfont iconicon_pinglunliang"></i>
+      <i class="iconfont iconicon_paixu_shengxu"></i>
+      <br />
+      <i class="iconfont iconicon_paixu_jiangxu"></i>
+      <i class="iconfont iconicon_paixu_weipai"></i>
+      <i class="iconfont iconbtn_nav_back"></i>
+      <i class="iconfont iconbtn_dianzan_big_nor"></i>
+      <i class="iconfont iconbtn_dianzan_small_nor"></i>
+      <i class="iconfont iconicon_footbar_fx_nor"></i>
+      <i class="iconfont iconicon_footbar_gs_sel"></i>
+      <i class="iconfont iconbtn_shoucang_nor"></i>
+      <br />
+      <i class="iconfont iconicon_footbar_gs_nor"></i>
+      <i class="iconfont iconbtn_share"></i>
+      <i class="iconfont iconicon_footbar_st_sel"></i>
+      <i class="iconfont iconicon_clean"></i>
+      <i class="iconfont iconbtn_dianzan_small_sel"></i>
+      <i class="iconfont iconicon_footbar_st_nor"></i>
+      <i class="iconfont iconbtn_share_close"></i>
+      <i class="iconfont iconicon_liulanliang"></i>
+      <br />
+      <i class="iconfont iconicon_footbar_wode_nor"></i>
+      <i class="iconfont iconicon_footbar_fx_sel"></i>
+      <i class="iconfont iconicon_search"></i>
+      <i class="iconfont iconicon_mine_qiyeshoucang"></i>
+      <i class="iconfont iconbtn_shoucang_sel"></i>
+      <i class="iconfont iconicon_xuanze_sel"></i>
+      <i class="iconfont iconicon_footbar_wode_sel"></i>
+      <i class="iconfont iconicon_xuanze_nor"></i>
+      <br />
+      <i class="iconfont iconicon_mine_gangwei"></i>
+      <i class="iconfont iconicon_xiajiang"></i>
+      <i class="iconfont iconicon_mine_cuoti"></i>
+      <i class="iconfont iconicon_dianzanliang"></i>
+      <i class="iconfont iconicon_shangsheng"></i>
+      <i class="iconfont iconicon_zhankai"></i>
+      <i class="iconfont iconicon_more"></i>
+      <br />
+      <i class="iconfont iconicon_mine_tikushoucang"></i>
+      <i class="iconfont iconicon_mine_mianjing"></i>
+      <i class="iconfont iconicon_mine_xiaoxi"></i>
+      <i class="iconfont iconbtn_dianzan_big_sel"></i>
+    </div>
   </div>
 </template>
 
 <script>
+// 导入axios
+import { apiGetCode } from '@/api/au.js'
 export default {
   data () {
     return {
       user: {
         mobile: '',
-        code: ''
+        code: '',
+        checked: false
+      },
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'onBlur' },
+          {
+            pattern: /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/,
+            message: '请输入正确的手机号',
+            trigger: 'onBlur'
+          }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'onBlur' }, // 非空判断
+          {
+            pattern: /^\d{4}$/,
+            message: '请输入正确的验证码',
+            trigger: 'onBlur'
+          }
+        ]
       }
     }
   },
   methods: {
     onSubmit (values) {
       console.log('submit', values)
+    },
+    getCode () {
+      // 校验手机号是否合法
+      this.$refs.myForm.validate('mobile').then(() => {
+        // 添加加载动画
+        this.$toast.loading({
+          duration: 0, // 一直显示
+          message: '加载中', // 加载的文本
+          forbidClick: true // 禁止点击背景
+        })
+        apiGetCode(this.user.mobile).then((res) => {
+          // 提示验证码
+          this.$toast.success(res.data)
+        })
+      }).catch(error => {
+        console.log('catch')
+        // 打印校验信息
+        this.$toast.fail(error.message)
+      })
+      // setTimeout(() => {
+      //   axios({
+      //     url: 'http://localhost:1337/au/code',
+      //     method: 'post',
+      //     data: {
+      //       mobile: this.user.mobile
+      //     }
+      //   }).then((res) => {
+      //     // 得到验证码
+      //     console.log(res.data.data)
+      //     // 提示验证码
+      //     this.$toast.success(res.data.data)
+      //   })
+      // }, 1000)
+    },
+    submit () {
+      console.log('提交')
     }
   },
-  created () {},
-  mounted () {}
+  created () {}
 }
 </script>
 
 <style scoped lang="less">
 .login {
-  .title {
-    font-size: 18px;
-    font-family: PingFangSC, PingFangSC-Semibold;
-    font-weight: 600;
-    text-align: left;
-    color: #222222;
-    line-height: 50px;
-    margin-left: 15px;
-    margin-bottom: 50px;
+  font-size: 12px;
+  .navBar {
+    /deep/.van-nav-bar__left {
+      padding: 0;
+    }
+    i {
+      font-size: 44px;
+    }
   }
-  .van-button--info {
-    background-color: #e40137;
-    border-color: #e40137;
+  .content {
+    padding: 0 15px;
+    .title {
+      font-size: 18px;
+      font-family: PingFangSC, PingFangSC-Semibold;
+      font-weight: 600;
+      text-align: left;
+      color: #222;
+      margin-top: 50px;
+      margin-bottom: 63px;
+      font-size: 18px;
+    }
   }
+
   .van-button--default {
     border-color: #fff;
     border-left-color: #ebedf0;
@@ -79,17 +231,36 @@ export default {
       color: #00b8d4;
       font-size: 16px;
     }
+    /deep/ .van-field__left-icon {
+      margin-top: 4px;
+    }
   }
   .btnSubmit {
-    margin-top: 20px;
+    margin-top: 40px !important;
     .van-button__text {
       font-size: 18px;
     }
   }
   .consent {
+    font-size: 12px;
     margin-top: 15px;
-    text-indent: 20px;
-    font-size: 15px;
+    strong {
+      color: #00b8d4;
+      font-weight: normal;
+    }
+    /deep/ .van-checkbox__icon--checked .van-icon {
+      background-color: #00b8d4;
+      border-color: #00b8d4;
+    }
+  }
+  input::-webkit-input-placeholder {
+    color: #ccc;
+  }
+  input::-moz-input-placeholder {
+    color: #ccc;
+  }
+  input::-ms-input-placeholder {
+    color: #ccc;
   }
 }
 </style>

@@ -7,8 +7,8 @@ import 'vant/lib/index.css'
 import 'amfe-flexible'
 // 导入 页面适配 - normalize.css
 import 'normalize.css'
-// 导入iconfont
-// import 'http://at.alicdn.com/t/font_1872833_574nrxnun9l.css'
+// 导入字体图标
+import './style/index.css'
 
 // 使用 vant
 Vue.use(Vant)
