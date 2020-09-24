@@ -2,7 +2,7 @@
 // 导入request.js
 import _fetch from '@/utils/request.js'
 
-// 封装方法 获取验证码
+// 获取验证码 api
 // 这里的data 方便了解传入的参数的类型
 function apiGetCode (mobile) {
   return _fetch({
@@ -14,4 +14,13 @@ function apiGetCode (mobile) {
   })
 }
 
-export { apiGetCode }
+// 登录 api
+function apiLogin (data) {
+  return _fetch({
+    url: '/au/login',
+    method: 'POST',
+    data
+  })
+}
+
+export { apiGetCode, apiLogin }

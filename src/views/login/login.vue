@@ -29,15 +29,23 @@
             <i class="iconfont iconyanzhengma"></i>
           </template>
           <template #button>
-            <van-button size="small" @click="getCode">获取验证码</van-button>
+            <van-button size="small" @click="getCode">{{
+              isBack ? time + 's后重新获取' : '获取验证码'
+            }}</van-button>
           </template>
         </van-field>
         <p class="consent">
-          登录即同意<strong>《用户使用协议》</strong>和<strong>《隐私协议》</strong
+          登录即同意<strong>《用户使用协议》</strong>和<strong
+            >《隐私协议》</strong
           >
         </p>
         <div style="margin: 16px;" class="btnSubmit">
-          <van-button round block type="danger" native-type="submit" @click="submit"
+          <van-button
+            round
+            block
+            type="danger"
+            native-type="submit"
+            @click="submit"
             >确定</van-button
           >
         </div>
@@ -123,12 +131,19 @@
 
 <script>
 // 导入axios
-import { apiGetCode } from '@/api/au.js'
+import { apiGetCode, apiLogin } from '@/api/au.js'
+import { setToken } from '@/utils/local.js'
 export default {
   data () {
     return {
+      // 是否处于倒计时
+      isBack: false,
+      // 倒计时时长
+      time: 60,
+      // 定义倒计时的定时器
+      timer: null,
       user: {
-        mobile: '',
+        mobile: '13422228888',
         code: '',
         checked: false
       },
@@ -153,44 +168,49 @@ export default {
     }
   },
   methods: {
-    onSubmit (values) {
-      console.log('submit', values)
-    },
-    getCode () {
+    // 得到服务器中的验证码
+    async getCode () {
+      // 判断是否处于倒计时
+      if (this.isBack) {
+        return false
+      }
+      // 开启倒计时
+      this.isBack = true
+      this.timer = setInterval(() => {
+        this.time--
+        if (this.time < 0) {
+          clearInterval(this.timer)
+          // 关闭倒计时状态
+          this.isBack = false
+          // 重置倒计时时间
+          this.time = 60
+        }
+      }, 1000)
       // 校验手机号是否合法
-      this.$refs.myForm.validate('mobile').then(() => {
-        // 添加加载动画
-        this.$toast.loading({
-          duration: 0, // 一直显示
-          message: '加载中', // 加载的文本
-          forbidClick: true // 禁止点击背景
-        })
-        apiGetCode(this.user.mobile).then((res) => {
-          // 提示验证码
-          this.$toast.success(res.data)
-        })
-      }).catch(error => {
-        console.log('catch')
-        // 打印校验信息
-        this.$toast.fail(error.message)
+      await this.$refs.myForm.validate('mobile')
+      // 添加加载动画
+      await this.$toast.loading({
+        duration: 0, // 一直显示
+        message: '加载中', // 加载的文本
+        forbidClick: true // 禁止点击背景
       })
-      // setTimeout(() => {
-      //   axios({
-      //     url: 'http://localhost:1337/au/code',
-      //     method: 'post',
-      //     data: {
-      //       mobile: this.user.mobile
-      //     }
-      //   }).then((res) => {
-      //     // 得到验证码
-      //     console.log(res.data.data)
-      //     // 提示验证码
-      //     this.$toast.success(res.data.data)
-      //   })
-      // }, 1000)
+      const resCode = await apiGetCode(this.user.mobile)
+      // 提示验证码
+      this.$toast.success(resCode.data)
     },
     submit () {
-      console.log('提交')
+      // console.log('提交')
+    },
+    async onSubmit () {
+      const resLogin = await apiLogin(this.user)
+      this.$toast.success('欢迎')
+      console.log(resLogin)
+      // 保存token
+      setToken('token', resLogin.data.jwt)
+      // 保存用户信息
+      this.$store.commit('setUserInfo', resLogin.data.user)
+      // 页面跳转
+      this.$router.push('/')
     }
   },
   created () {}
