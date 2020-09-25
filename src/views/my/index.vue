@@ -4,37 +4,39 @@
     <div class="top-bar">
       <div class="user-box">
         <div class="info-box">
-          <span>用户13455556666</span>
-          <span>面试不求人，我有面试宝典</span>
+          <p>{{ userInfo.nickname }}</p>
+          <span>{{ userInfo.intro }}</span>
         </div>
-        <img src="../../assets/img/11.jpg" alt="" />
+        <img :src="userInfo.avatar" alt="" @click="person"/>
       </div>
       <div class="data-box">
         <div class="item">
-          <span>298</span>
+          <span>{{ userInfo.submitNum }}</span>
           <p>累计答题</p>
         </div>
         <div class="item">
-          <span>298</span>
-          <p>累计答题</p>
+          <span>{{ userInfo.collectQuestions.length }}</span>
+          <p>收藏题目</p>
         </div>
         <div class="item">
-          <span>298</span>
-          <p>累计答题</p>
+          <span>{{ userInfo.errorNum }}</span>
+          <p>我的错题</p>
         </div>
         <div class="item">
-          <span>298</span>
-          <p>累计答题</p>
+          <span>{{
+            (
+              ((userInfo.submitNum - userInfo.errorNum) / userInfo.submitNum) *
+              100
+            ).toFixed(0) + '%'
+          }}</span>
+          <p>正确率</p>
         </div>
       </div>
     </div>
     <div class="main-container">
-      <van-cell title="我的岗位" value="产品经理" class="job-cell ">
+      <van-cell title="我的岗位" :value="userInfo.position" class="job-cell" is-link>
         <template #icon>
           <i class="iconfont iconicon_mine_gangwei"></i>
-        </template>
-        <template #right-icon>
-          <i class="iconfont iconicon_more"></i>
         </template>
       </van-cell>
       <!-- 面经数据 -->
@@ -42,19 +44,54 @@
         <div class="title">面经数据</div>
         <div class="chart-items">
           <div class="item">
-            <p class="top">昨日阅读<span>+300</span></p>
-            <p class="num">17</p>
+            <p class="top">昨日阅读<span>{{userInfo.shareData.read.yesterday}}</span></p>
+            <p class="num">{{userInfo.shareData.read.total}}</p>
             <p class="buttom">阅读总数</p>
           </div>
           <div class="item">
-            <p class="top">昨日阅读<span>+300</span></p>
-            <p class="num">17</p>
-            <p class="buttom">阅读总数</p>
+            <p class="top">昨日获赞<span>{{userInfo.shareData.read.yesterday}}</span></p>
+            <p class="num">{{userInfo.shareData.star.total}}</p>
+            <p class="buttom">获赞总数</p>
           </div>
           <div class="item">
-            <p class="top">昨日阅读<span>+300</span></p>
-            <p class="num">17</p>
-            <p class="buttom">阅读总数</p>
+            <p class="top">昨日新增<span>{{userInfo.shareData.read.yesterday}}</span></p>
+            <p class="num">{{userInfo.shareData.comment.total}}</p>
+            <p class="buttom">评论总数</p>
+          </div>
+        </div>
+      </div>
+      <!-- 其他选项 -->
+      <div class="other">
+        <div class="van-cell-group van-hairline--top-bottom myitem">
+          <div class=" my-cell van-cell van-cell--borderless">
+            <i class="iconfont iconicon_mine_mianjing"></i>
+            <div class="van-cell__title"><span>我的面经分享</span></div>
+            <div class="van-cell__value"><span>21</span></div>
+            <i class="iconfont iconicon_more"></i>
+          </div>
+          <div class=" my-cell van-cell van-cell--borderless">
+            <i class="iconfont iconicon_mine_xiaoxi"></i>
+            <div class="van-cell__title"><span>我的消息</span></div>
+            <div class="van-cell__value"><span>98</span></div>
+            <i class="iconfont iconicon_more"></i>
+          </div>
+          <div class=" my-cell van-cell van-cell--borderless">
+            <i class="iconfont iconicon_mine_tikushoucang"></i>
+            <div class="van-cell__title"><span>收藏的题库</span></div>
+            <div class="van-cell__value"><span>29</span></div>
+            <i class="iconfont iconicon_more"></i>
+          </div>
+          <div class=" my-cell van-cell van-cell--borderless">
+            <i class="iconfont iconicon_mine_qiyeshoucang"></i>
+            <div class="van-cell__title"><span>收藏的企业</span></div>
+            <div class="van-cell__value"><span>32</span></div>
+            <i class="iconfont iconicon_more"></i>
+          </div>
+          <div class=" my-cell van-cell van-cell--borderless">
+            <i class="iconfont iconicon_mine_cuoti"></i>
+            <div class="van-cell__title"><span>我的错题</span></div>
+            <div class="van-cell__value"><span>123</span></div>
+            <i class="iconfont iconicon_more"></i>
           </div>
         </div>
       </div>
@@ -63,21 +100,24 @@
 </template>
 
 <script>
-import { getToken } from '@/utils/local.js'
-import { getUserInfo } from '@/api/my.js'
+import { mapState } from 'vuex'
 export default {
   data () {
     return {}
   },
-  created () {
-    const tokenRes = 'Bearer ' + getToken('token')
-    console.log(tokenRes)
-    getUserInfo(tokenRes).then(res => {
-      console.log(res)
+  computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
     })
   },
+  created () {
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    person () {
+      this.$router.push('/person')
+    }
+  }
 }
 </script>
 
@@ -103,21 +143,17 @@ export default {
       }
       .info-box {
         color: #fff;
-        span:first-child {
-          width: 85px;
-          height: 29px;
-          font-size: 21px;
+        p {
+          font-size: 22px;
           font-family: PingFangSC, PingFangSC-Semibold;
           font-weight: 400;
           text-align: left;
           color: #ffffff;
-          line-height: 29px;
           letter-spacing: 0px;
+          margin: 0 0 10px 0;
         }
-        span:last-child {
+        span {
           font-size: 12px;
-          margin-top: 6px;
-          display: inline-block;
         }
       }
     }
@@ -137,6 +173,7 @@ export default {
     }
   }
   .main-container {
+    margin-bottom: 40px;
     background-color: #f7f4f5;
     position: relative;
     padding: 26px 15px;
@@ -172,6 +209,7 @@ export default {
         font-weight: 600;
         padding-left: 15px;
         padding-top: 15px;
+        margin-bottom: 10px;
       }
       .chart-items {
         display: flex;
@@ -188,13 +226,16 @@ export default {
             font-weight: 700;
             margin-top: 9px;
           }
-          .bottom {
+          .buttom {
             font-size: 12px;
             color: #545671;
             margin-top: 6px;
           }
         }
       }
+    }
+    .other {
+      margin-top: 20px;
     }
   }
 }

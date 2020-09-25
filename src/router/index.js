@@ -6,6 +6,10 @@ import Company from '../views/company'
 import Question from '../views/question'
 import Find from '../views/find'
 import My from '../views/my'
+import { getToken } from '@/utils/local.js'
+import { Toast } from 'vant'
+import store from '@/store/index.js'
+import { getUserInfo } from '@/api/my.js'
 
 Vue.use(VueRouter)
 
@@ -33,7 +37,10 @@ const routes = [
       {
         path: '/my',
         name: 'My',
-        component: My
+        component: My,
+        meta: {
+          needLogin: true
+        }
       }
     ]
   },
@@ -46,6 +53,40 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+// 路由 前置导航守卫
+router.beforeEach(async (to, from, next) => {
+  // 获取 跳转路由元信息
+  const needLogin = to.meta.needLogin
+  // 如果不需要权限 直接往下执行
+  if (!needLogin) {
+    next()
+  } else {
+    // 判断token是否存在
+    const token = getToken('token')
+    if (token) {
+      // 判断 userInfo 中是否有数据
+      // 有 next()
+      // 没有 根据 token 发送请求到服务器获取用户数据 保存信息到 vuex
+      const userInfo = store.state.userInfo
+      if (userInfo) {
+        next()
+      } else {
+        const resUser = await getUserInfo()
+        console.log(resUser.data)
+        // 修改用户头头像地址
+        resUser.data.avatar = 'http://localhost:1337' + resUser.data.avatar
+        store.commit('setUserInfo', resUser.data)
+        next()
+      }
+    } else {
+      Toast.fail('你还未登录')
+      // 跳转登录页
+      router.push('/login')
+    }
+  }
+  next()
 })
 
 export default router

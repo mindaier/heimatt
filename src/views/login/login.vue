@@ -29,9 +29,9 @@
             <i class="iconfont iconyanzhengma"></i>
           </template>
           <template #button>
-            <van-button size="small" @click="getCode">{{
+            <span @click="getCode">{{
               isBack ? time + 's后重新获取' : '获取验证码'
-            }}</van-button>
+            }}</span>
           </template>
         </van-field>
         <p class="consent">
@@ -45,7 +45,6 @@
             block
             type="danger"
             native-type="submit"
-            @click="submit"
             >确定</van-button
           >
         </div>
@@ -132,7 +131,7 @@
 <script>
 // 导入axios
 import { apiGetCode, apiLogin } from '@/api/au.js'
-// import { setToken } from '@/utils/local.js'
+import { setToken } from '@/utils/local.js'
 export default {
   data () {
     return {
@@ -174,43 +173,57 @@ export default {
       if (this.isBack) {
         return false
       }
-      // 开启倒计时
-      this.isBack = true
-      this.timer = setInterval(() => {
-        this.time--
-        if (this.time < 0) {
-          clearInterval(this.timer)
-          // 关闭倒计时状态
-          this.isBack = false
-          // 重置倒计时时间
-          this.time = 60
-        }
-      }, 1000)
-      // 校验手机号是否合法
-      await this.$refs.myForm.validate('mobile')
-      // 添加加载动画
-      await this.$toast.loading({
-        duration: 0, // 一直显示
-        message: '加载中', // 加载的文本
-        forbidClick: true // 禁止点击背景
-      })
-      const resCode = await apiGetCode(this.user.mobile)
-      // 提示验证码
-      this.$toast.success(resCode.data)
+      try {
+        // 校验手机号是否合法
+        await this.$refs.myForm.validate('mobile')
+        // 开启倒计时
+        this.isBack = true
+        this.timer = setInterval(() => {
+          this.time--
+          if (this.time < 0) {
+            clearInterval(this.timer)
+            // 关闭倒计时状态
+            this.isBack = false
+            // 重置倒计时时间
+            this.time = 60
+          }
+        }, 1000)
+        // 添加加载动画
+        await this.$toast.loading({
+          duration: 0, // 一直显示
+          message: '加载中', // 加载的文本
+          forbidClick: true // 禁止点击背景
+        })
+        const resCode = await apiGetCode(this.user.mobile)
+        // 提示验证码
+        this.$toast.success(resCode.data)
+      } catch (error) {
+        this.$toast.fail(error.message)
+      }
     },
     submit () {
       // console.log('提交')
     },
     async onSubmit () {
-      const resLogin = await apiLogin(this.user)
-      this.$toast.success('欢迎')
-      console.log(resLogin.data.jwt)
-      // 保存token
-      // setToken('token', resLogin.data.jwt)
-      // 保存用户信息
-      this.$store.commit('setUserInfo', resLogin.data.user)
-      // 页面跳转
-      this.$router.push('/my')
+      // 添加加载效果
+      this.$toast.loading({
+        duration: 0
+      })
+      try {
+        const resLogin = await apiLogin(this.user)
+        // console.log(resLogin.data.jwt)
+        // 保存token
+        setToken('token', resLogin.data.jwt)
+        // 将得到的用户信息中的头像 地址拼接完整
+        resLogin.data.user.avatar = 'http://localhost:1337' + resLogin.data.user.avatar
+        // 保存用户信息到 vuex 中
+        this.$store.commit('setUserInfo', resLogin.data.user)
+        // 页面跳转
+        this.$router.push('/my')
+        this.$toast.success('欢迎')
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   created () {}
