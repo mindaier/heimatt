@@ -6,6 +6,7 @@ import Company from '../views/company'
 import Question from '../views/question'
 import Find from '../views/find'
 import My from '../views/my'
+import person from '@/views/my/person.vue'
 import { getToken } from '@/utils/local.js'
 import { Toast } from 'vant'
 import store from '@/store/index.js'
@@ -48,6 +49,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/person',
+    name: 'person',
+    component: person
   }
 ]
 
