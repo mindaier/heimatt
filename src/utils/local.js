@@ -1,16 +1,16 @@
 // 添加 `localstorage`  token
-function setToken (token) {
-  window.localStorage.setItem('token', token)
+function setToken (key, value) {
+  window.localStorage.setItem(key, value)
 }
 
 // 获取 `localstorage`
-function getToken () {
-  return window.localStorage.getItem('token')
+function getToken (key) {
+  return window.localStorage.getItem(key)
 }
 
 // 删除 `localstorage`
-function delToken () {
-  return window.localStorage.clear()
+function delToken (key) {
+  return window.localStorage.removeItem(key)
 }
 
 export { setToken, getToken, delToken }

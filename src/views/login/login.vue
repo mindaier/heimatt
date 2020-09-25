@@ -52,7 +52,7 @@
       </van-form>
     </div>
 
-    <div>
+    <!-- <div>
       <i class="iconfont iconxingxing2"></i>
       <i class="iconfont iconbianzu4"></i>
       <i class="iconfont iconbianzu2"></i>
@@ -125,14 +125,14 @@
       <i class="iconfont iconicon_mine_mianjing"></i>
       <i class="iconfont iconicon_mine_xiaoxi"></i>
       <i class="iconfont iconbtn_dianzan_big_sel"></i>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 // 导入axios
 import { apiGetCode, apiLogin } from '@/api/au.js'
-import { setToken } from '@/utils/local.js'
+// import { setToken } from '@/utils/local.js'
 export default {
   data () {
     return {
@@ -204,13 +204,13 @@ export default {
     async onSubmit () {
       const resLogin = await apiLogin(this.user)
       this.$toast.success('欢迎')
-      console.log(resLogin)
+      console.log(resLogin.data.jwt)
       // 保存token
-      setToken('token', resLogin.data.jwt)
+      // setToken('token', resLogin.data.jwt)
       // 保存用户信息
       this.$store.commit('setUserInfo', resLogin.data.user)
       // 页面跳转
-      this.$router.push('/')
+      this.$router.push('/my')
     }
   },
   created () {}
