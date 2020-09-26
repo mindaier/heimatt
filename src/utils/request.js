@@ -4,7 +4,7 @@ import { Toast } from 'vant'
 
 // 创建 _fetch 的实例对象并设置基地址
 const _fetch = axios.create({
-  baseURL: 'http://localhost:1337'
+  baseURL: process.env.VUE_APP_URL
   // withCredentials: true
 })
 

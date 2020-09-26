@@ -123,6 +123,7 @@ export default {
 
 <style scoped lang="less">
 .my-container {
+  height: 100%;
   font-size: 16px;
   .top-bar {
     height: 216px;

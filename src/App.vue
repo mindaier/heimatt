@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <router-view/>
+    <div class="app">
+      <router-view />
     </div>
 </template>
 
@@ -9,7 +9,7 @@ import '@/assets/js/rem.js'
 export default {
   data () {
     return {
-
+      name: 'App'
     }
   },
   created () {
@@ -24,6 +24,11 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
-
+<style lang="less">
+html, body,#app {
+  height: 100%;
+}
+.app {
+  height: 100%;
+}
 </style>

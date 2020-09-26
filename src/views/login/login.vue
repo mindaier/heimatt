@@ -135,6 +135,7 @@ import { setToken } from '@/utils/local.js'
 export default {
   data () {
     return {
+      baseUrl: process.env.VUE_APP_URL,
       // 是否处于倒计时
       isBack: false,
       // 倒计时时长
@@ -142,7 +143,7 @@ export default {
       // 定义倒计时的定时器
       timer: null,
       user: {
-        mobile: '13422228888',
+        mobile: '18888881111',
         code: '',
         checked: false
       },
@@ -215,7 +216,7 @@ export default {
         // 保存token
         setToken('token', resLogin.data.jwt)
         // 将得到的用户信息中的头像 地址拼接完整
-        resLogin.data.user.avatar = 'http://localhost:1337' + resLogin.data.user.avatar
+        resLogin.data.user.avatar = this.baseUrl + resLogin.data.user.avatar
         // 保存用户信息到 vuex 中
         this.$store.commit('setUserInfo', resLogin.data.user)
         // 页面跳转
