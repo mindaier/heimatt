@@ -81,8 +81,9 @@ router.beforeEach(async (to, from, next) => {
       } else {
         const resUser = await getUserInfo()
         console.log(resUser.data)
+        const baseUrl = process.env.VUE_APP_URL
         // 修改用户头头像地址
-        resUser.data.avatar = 'http://localhost:1337' + resUser.data.avatar
+        resUser.data.avatar = baseUrl + resUser.data.avatar
         store.commit('setUserInfo', resUser.data)
         next()
       }

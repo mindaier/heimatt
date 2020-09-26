@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant'
-// import { getToken } from './local'
+import { getToken } from './local'
 
 // 创建 _fetch 的实例对象并设置基地址
 const _fetch = axios.create({
@@ -10,6 +10,12 @@ const _fetch = axios.create({
 
 // 添加 请求拦截器
 _fetch.interceptors.request.use(function (config) {
+  const token = getToken('token')
+  // 判断是否需要 needToken
+  if (config.needToken) {
+    // 携带 token 到请求头中
+    config.headers.authorization = 'Bearer ' + token
+  }
   return config
 }, function (error) {
   return Promise.reject(error)

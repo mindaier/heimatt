@@ -1,13 +1,14 @@
 // 我的 页面接口
 // 导入request.js
 import _fetch from '@/utils/request.js'
-import { getToken } from '@/utils/local.js'
+// import { getToken } from '@/utils/local.js'
 
 // 用户信息 根据 token 得到用户信息
 function getUserInfo () {
   return _fetch({
     url: '/au/info',
-    headers: { authorization: 'Bearer ' + getToken('token') }
+    needToken: true // 添加一个标识属性 axios自定义属性
+    // headers: { authorization: 'Bearer ' + getToken('token') }
   })
 }
 
@@ -17,7 +18,8 @@ function editUserInfo ({ data }) {
     url: '/au/edit',
     method: 'POST',
     data,
-    headers: { authorization: 'Bearer ' + getToken('token') }
+    needToken: true
+    // headers: { authorization: 'Bearer ' + getToken('token') }
   })
 }
 
@@ -27,7 +29,8 @@ function upload (data) {
     url: '/upload',
     method: 'POST',
     data,
-    headers: { authorization: 'Bearer ' + getToken('token') }
+    needToken: true
+    // headers: { authorization: 'Bearer ' + getToken('token') }
   })
 }
 
