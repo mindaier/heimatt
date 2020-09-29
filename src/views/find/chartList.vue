@@ -50,7 +50,7 @@ export default {
   methods: {
     async getData () {
       const res = await getChart()
-      console.log(res)
+      // console.log(res)
       res.data.yearSalary.reverse()
       this.chartData = res.data
       // 默认显示4条数据

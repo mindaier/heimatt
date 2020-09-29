@@ -13,7 +13,7 @@
     <chartList></chartList>
     <!-- 面经分享 -->
     <div class="experience-box">
-      <van-cell title="面经分享" is-link value="查看更多" class="mycell" />
+      <van-cell title="面经分享" is-link value="查看更多" class="mycell" @click="$router.push('/share')"/>
       <div class="experience-list">
         <shareItem v-for="(item, index) in shareList" :key="index" :item="item"></shareItem>
       </div>
@@ -30,6 +30,7 @@ import shareItem from './shareItem'
 // 市场数据
 import chartList from './chartList'
 export default {
+  name: 'find',
   components: {
     technicIItem,
     shareItem,

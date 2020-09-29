@@ -1,6 +1,6 @@
 <template>
   <div class="item">
-    <h3 class="title">{{item.title}}</h3>
+    <h3 class="title" v-html="item.title"></h3>
     <p class="content">
       {{item.content}}
     </p>
@@ -16,7 +16,7 @@
       <div class="info-r">
         <span class="time">{{item.updated_at | timeFormat}}</span>
         <i class="iconfont iconicon_pinglunliang"></i>
-        <span>{{item.share}}</span>
+        <span>{{item.article_comments}}</span>
         <i class="iconfont iconbtn_dianzan_small_nor"></i>
         <span>{{item.star}}</span>
       </div>

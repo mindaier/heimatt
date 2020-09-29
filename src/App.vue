@@ -1,7 +1,7 @@
 <template>
-    <div class="app">
-      <router-view />
-    </div>
+  <div class="app">
+    <router-view />
+  </div>
 </template>
 
 <script>
@@ -12,20 +12,16 @@ export default {
       name: 'App'
     }
   },
-  created () {
-
-  },
-  mounted () {
-
-  },
-  methods: {
-
-  }
+  created () {},
+  mounted () {},
+  methods: {}
 }
 </script>
 
 <style lang="less">
-html, body,#app {
+html,
+body,
+#app {
   height: 100%;
 }
 .app {

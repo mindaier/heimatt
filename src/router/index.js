@@ -14,6 +14,9 @@ import { getUserInfo } from '@/api/my.js'
 import info from '@/views/my/info.vue'
 import avatar from '@/views/my/avatar.vue'
 import faceskill from '@/views/find/faceSkill.vue'
+import fssearch from '@/views/find/fssearch.vue'
+import share from '@/views/find/share.vue'
+import sharesearch from '@/views/find/sharesearch.vue'
 
 Vue.use(VueRouter)
 
@@ -84,6 +87,21 @@ const routes = [
     path: '/faceskill',
     name: 'faceskill',
     component: faceskill
+  },
+  {
+    path: '/fssearch',
+    name: 'fssearch',
+    component: fssearch
+  },
+  {
+    path: '/share',
+    name: 'share',
+    component: share
+  },
+  {
+    path: '/share/search',
+    name: 'sharesearch',
+    component: sharesearch
   }
 ]
 
@@ -124,5 +142,12 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 })
+
+// 解决 vue-router 不允许两次跳转到同一页面
+const originalPush = VueRouter.prototype.push // 将 router 中的 push 方法保存起来
+VueRouter.prototype.push = function push (location) {
+  // 重新给 router 中的 push 方法赋值
+  return originalPush.call(this, location).catch(err => err) // catch 捕获错误
+}
 
 export default router

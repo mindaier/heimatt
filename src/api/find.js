@@ -11,12 +11,34 @@ function getTechnic (params) {
   })
 }
 // 面经分享
-function getShare (params) {
+function getShare ({ start, limit, q }) {
   return _fetch({
     url: '/articles/share',
     method: 'GET',
-    params,
+    params: {
+      start, limit, q
+    },
     needToken: true
+  })
+}
+
+// 面经热搜 得到热门历史数据
+function getHotSearch () {
+  return _fetch({
+    url: '/articles/shareTopSearch'
+  })
+}
+
+// 封装方法：得到面经数据
+function apiGetShare ({ start, limit, q }) {
+  return _fetch({
+    url: '/articles/share',
+    needToken: true,
+    params: {
+      start,
+      limit,
+      q
+    }
   })
 }
 
@@ -29,4 +51,4 @@ function getChart (params) {
   })
 }
 
-export { getTechnic, getShare, getChart }
+export { getTechnic, getShare, getChart, getHotSearch, apiGetShare }

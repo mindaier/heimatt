@@ -1,7 +1,8 @@
 <template>
   <div class="layout">
-    <router-view></router-view>
-
+    <keep-alive include="find">
+      <router-view></router-view>
+    </keep-alive>
     <!-- 底部导航条 -->
     <van-tabbar v-model="active" route class="tabbar">
       <van-tabbar-item name="home" icon="home-o" to="/company">
