@@ -13,23 +13,34 @@ function getUserInfo () {
 }
 
 // 修改用户信息
-function editUserInfo ({ data }) {
+function editUserInfo ({ nickname, intro, gender, avatar, position, area }) {
   return _fetch({
     url: '/au/edit',
     method: 'POST',
-    data,
+    data: {
+      nickname,
+      intro,
+      gender,
+      avatar,
+      position,
+      area
+    },
     needToken: true
     // headers: { authorization: 'Bearer ' + getToken('token') }
   })
 }
 
 // 文件上传接口
-function upload (data) {
+function upload (file) {
+  // 创建 formData
+  const fd = new FormData()
+  // 添加参数
+  fd.append('files', file)
   return _fetch({
     url: '/upload',
     method: 'POST',
-    data,
-    needToken: true
+    needToken: true,
+    data: fd
     // headers: { authorization: 'Bearer ' + getToken('token') }
   })
 }

@@ -8,76 +8,126 @@
     </van-nav-bar>
     <!-- 主体内容 -->
     <div class="main-box">
-      <van-cell title="头像" is-link class="userImg" url="/avatar" >
+      <van-cell title="头像" is-link class="userImg" url="/avatar" to="/avatar?property=avatar">
         <template>
-          <img :src="baseUrl + person.avatar" alt="" />
+          <img :src="userInfo.avatar" alt="" />
         </template>
       </van-cell>
       <van-cell-group class="userInfo">
         <van-cell
           title="昵称"
-          :value="person.nickname"
+          :value="userInfo.nickname"
           is-link
           class="my-cell"
+          to="/info?property=nickname"
         />
         <van-cell
           title="性别"
-          :value="person.gender == 1 ? '男' : '女'"
           is-link
           class="my-cell"
-        />
-        <van-cell title="地区" :value="person.area" is-link class="my-cell" />
+          @click="genderShow = true"
+        >
+          <template>
+            <span v-if="userInfo.gender === 0">未知</span>
+            <span v-if="userInfo.gender === 1">男孩子</span>
+            <span v-if="userInfo.gender === 2">女孩子</span>
+          </template>
+        </van-cell>
+        <van-cell title="地区" :value="areaList.city_list[userInfo.area]" is-link class="my-cell" @click="areaShow=true"/>
         <van-cell
           title="个人简介"
-          :value="person.intro"
+          :value="userInfo.intro"
           is-link
           class="my-cell"
+          to="/info?property=intro"
         />
       </van-cell-group>
       <van-button type="primary" class="logout" size="large" @click="logout"
         >退出登录</van-button
       >
     </div>
+    <!-- 性别修改面板 -->
+    <van-popup v-model="genderShow" position="bottom" :style="{ height: '40%' }" :close-on-click-overlay="false"
+    >
+      <van-picker show-toolbar :columns="columns" @confirm="saveGender" title="性别" :default-index="userInfo.gender"  @cancel="genderShow = false"></van-picker>
+    </van-popup>
+    <!-- 地区修改面板 -->
+     <van-popup v-model="areaShow" position="bottom" :style="{ height: '40%' }" :close-on-click-overlay="false">
+      <van-area title="地区" :area-list="areaList" :columns-num="2" @confirm="saveArea" @cancel="areaShow = false"/>
+    </van-popup>
   </div>
 </template>
 
 <script>
-import { getUserInfo } from '@/api/my.js'
+import { editUserInfo } from '@/api/my.js'
 import { delToken } from '@/utils/local.js'
+import { mapState } from 'vuex'
+import areaList from '@/utils/area.js'
 export default {
   data () {
     return {
+      genderShow: false,
+      areaShow: false,
+      nickShow: false,
+      columns: ['未知', '男孩子', '女孩子'],
       baseUrl: process.env.VUE_APP_URL,
-      person: {
-        nickname: '', // 否string昵称
-        intro: '', // 否string个性签名
-        gender: '', // 否number性别:0(未知) 1(男) 2(女)
-        avatar: '', // 否number头像id，通过文件上传接口获取
-        position: '', // 否string职位名
-        area: '' // 否string城市编码
-      }
+      areaList: areaList
     }
   },
+  computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    })
+  },
   created () {
-    // 从 vuex 中获取用户信息
-    this.getData()
   },
   mounted () {},
   methods: {
     goUser () {
       this.$router.push('/my')
     },
-    async getData () {
-      const res = await getUserInfo()
-      // console.log(res)
-      this.person = res.data
+    // 保存性别 (选中的文本 下标)
+    async saveGender (value, index) {
+      this.$toast.loading({
+        duration: 0
+      })
+      this.genderShow = false
+      // 将修改后的数据提交服务器
+      await editUserInfo({ gender: index })
+      this.$store.dispatch('setUserInfo')
+      // 关闭 弹窗
+      this.$toast.success('性别修改成功')
     },
+    // 保存地区
+    async saveArea (value, index) {
+      this.$toast.loading({
+        duration: 0
+      })
+      this.areaShow = false
+      await editUserInfo({ area: value[1].code })
+      this.$store.dispatch('setUserInfo')
+      // 关闭 弹窗
+      this.$toast.success('地区修改成功')
+    },
+    // 昵称修改
     // 退出登录
     logout () {
-      // 清除token
-      delToken('token')
-      // 跳转至登录页
-      this.$router.push('/login')
+      this.$dialog.confirm({
+        title: '提示',
+        message: '您确定要退出吗?'
+      })
+        .then(() => {
+          // on confirm
+          // 清除token
+          delToken('token')
+          // 清除 vuex 中的 userInfo 数据
+          this.$store.commit('setUserInfo', '')
+          // 跳转至登录页
+          this.$router.push('/login')
+        })
+        .catch(() => {
+          // on cancel
+        })
     }
   }
 }

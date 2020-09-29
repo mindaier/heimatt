@@ -2,7 +2,7 @@
   <div class="login">
     <van-nav-bar class="navBar">
       <template #left>
-        <i class="iconfont iconbtn_nav_back"></i>
+        <i class="iconfont iconbtn_nav_back" @click="goBack"></i>
       </template>
     </van-nav-bar>
     <div class="content">
@@ -50,81 +50,6 @@
         </div>
       </van-form>
     </div>
-
-    <!-- <div>
-      <i class="iconfont iconxingxing2"></i>
-      <i class="iconfont iconbianzu4"></i>
-      <i class="iconfont iconbianzu2"></i>
-      <i class="iconfont iconbianzu3"></i>
-      <i class="iconfont iconbianzu1"></i>
-      <br />
-      <i class="iconfont iconyanzhengma"></i>
-      <i class="iconfont iconbianzu"></i>
-      <i class="iconfont iconsanjiaoxing2"></i>
-      <i class="iconfont iconbtn_delete_sel"></i>
-      <i class="iconfont iconbtn_delete_nor"></i>
-      <br />
-      <i class="iconfont iconicon_zhengque"></i>
-      <i class="iconfont iconicon_cuowu"></i>
-      <i class="iconfont iconbtn_shuati_fankui"></i>
-      <i class="iconfont iconicon_city"></i>
-      <i class="iconfont iconicon_xueli"></i>
-      <i class="iconfont iconicon_nian"></i>
-      <br />
-      <i class="iconfont iconicon_gongsi_jiaban"></i>
-      <i class="iconfont iconicon_gongsi_sx"></i>
-      <i class="iconfont iconicon_gongsi_time"></i>
-      <i class="iconfont iconicon_gongsi_buchongyiliao"></i>
-      <i class="iconfont iconicon_gongsi_gongfeilvyou"></i>
-      <i class="iconfont iconicon_gongsi_daohang"></i>
-      <br />
-      <i class="iconfont iconicon_pingfen_nor"></i>
-      <i class="iconfont iconicon_pingfen_sel"></i>
-      <i class="iconfont iconicon_gongsi_qingqitijian"></i>
-      <i class="iconfont iconicon_gongsi_nianzhongjiang"></i>
-      <i class="iconfont iconicon_pinglunliang"></i>
-      <i class="iconfont iconicon_paixu_shengxu"></i>
-      <br />
-      <i class="iconfont iconicon_paixu_jiangxu"></i>
-      <i class="iconfont iconicon_paixu_weipai"></i>
-      <i class="iconfont iconbtn_nav_back"></i>
-      <i class="iconfont iconbtn_dianzan_big_nor"></i>
-      <i class="iconfont iconbtn_dianzan_small_nor"></i>
-      <i class="iconfont iconicon_footbar_fx_nor"></i>
-      <i class="iconfont iconicon_footbar_gs_sel"></i>
-      <i class="iconfont iconbtn_shoucang_nor"></i>
-      <br />
-      <i class="iconfont iconicon_footbar_gs_nor"></i>
-      <i class="iconfont iconbtn_share"></i>
-      <i class="iconfont iconicon_footbar_st_sel"></i>
-      <i class="iconfont iconicon_clean"></i>
-      <i class="iconfont iconbtn_dianzan_small_sel"></i>
-      <i class="iconfont iconicon_footbar_st_nor"></i>
-      <i class="iconfont iconbtn_share_close"></i>
-      <i class="iconfont iconicon_liulanliang"></i>
-      <br />
-      <i class="iconfont iconicon_footbar_wode_nor"></i>
-      <i class="iconfont iconicon_footbar_fx_sel"></i>
-      <i class="iconfont iconicon_search"></i>
-      <i class="iconfont iconicon_mine_qiyeshoucang"></i>
-      <i class="iconfont iconbtn_shoucang_sel"></i>
-      <i class="iconfont iconicon_xuanze_sel"></i>
-      <i class="iconfont iconicon_footbar_wode_sel"></i>
-      <i class="iconfont iconicon_xuanze_nor"></i>
-      <br />
-      <i class="iconfont iconicon_mine_gangwei"></i>
-      <i class="iconfont iconicon_xiajiang"></i>
-      <i class="iconfont iconicon_mine_cuoti"></i>
-      <i class="iconfont iconicon_dianzanliang"></i>
-      <i class="iconfont iconicon_shangsheng"></i>
-      <i class="iconfont iconicon_zhankai"></i>
-      <i class="iconfont iconicon_more"></i>
-      <br />
-      <i class="iconfont iconicon_mine_tikushoucang"></i>
-      <i class="iconfont iconicon_mine_mianjing"></i>
-      <i class="iconfont iconicon_mine_xiaoxi"></i>
-      <i class="iconfont iconbtn_dianzan_big_sel"></i>
-    </div> -->
   </div>
 </template>
 
@@ -220,10 +145,29 @@ export default {
         // 保存用户信息到 vuex 中
         this.$store.commit('setUserInfo', resLogin.data.user)
         // 页面跳转
-        this.$router.push('/my')
-        this.$toast.success('欢迎')
+        // this.$router.push('/my')
+        // 判断是否有保存 上一次访问的页面
+        this.$toast.success('登录成功')
+        const redirect = this.$route.query._redirect
+        // 判断是否有 redirect 有就直接跳转 redirect 页面 否则跳转my页面
+        if (redirect) {
+          this.$router.push(redirect)
+        } else {
+          this.$router.push('/my')
+        }
       } catch (err) {
         console.log(err)
+      }
+    },
+    goBack () { // 登录页面 后退按钮 返回功能
+      // 判断是否有 redirect
+      const redirect = this.$route.query._redirect
+      if (redirect) {
+        // 返回find
+        this.$router.push('/find')
+      } else {
+        // 返回上一页面
+        this.$router.go(-1)
       }
     }
   },

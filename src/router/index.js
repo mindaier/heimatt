@@ -11,6 +11,9 @@ import { getToken } from '@/utils/local.js'
 import { Toast } from 'vant'
 import store from '@/store/index.js'
 import { getUserInfo } from '@/api/my.js'
+import info from '@/views/my/info.vue'
+import avatar from '@/views/my/avatar.vue'
+import faceskill from '@/views/find/faceSkill.vue'
 
 Vue.use(VueRouter)
 
@@ -28,7 +31,10 @@ const routes = [
       {
         path: '/question',
         name: 'Question',
-        component: Question
+        component: Question,
+        meta: {
+          needLogin: true
+        }
       },
       {
         path: '/find',
@@ -53,7 +59,31 @@ const routes = [
   {
     path: '/person',
     name: 'person',
-    component: person
+    component: person,
+    meta: {
+      needLogin: true
+    }
+  },
+  {
+    path: '/info',
+    name: 'info',
+    component: info,
+    meta: {
+      needLogin: true
+    }
+  },
+  {
+    path: '/avatar',
+    name: 'avatar',
+    component: avatar,
+    meta: {
+      needLogin: true
+    }
+  },
+  {
+    path: '/faceskill',
+    name: 'faceskill',
+    component: faceskill
   }
 ]
 
@@ -65,14 +95,14 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   // 获取 跳转路由元信息
   const needLogin = to.meta.needLogin
-  // 如果不需要权限 直接往下执行
+  // 如果不需要权限(登录) 直接往下执行
   if (!needLogin) {
     next()
   } else {
     // 判断token是否存在
     const token = getToken('token')
     if (token) {
-      // 判断 userInfo 中是否有数据
+      // 判断vuex中 userInfo 是否有数据
       // 有 next()
       // 没有 根据 token 发送请求到服务器获取用户数据 保存信息到 vuex
       const userInfo = store.state.userInfo
@@ -80,7 +110,7 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         const resUser = await getUserInfo()
-        console.log(resUser.data)
+        // console.log(resUser.data)
         const baseUrl = process.env.VUE_APP_URL
         // 修改用户头头像地址
         resUser.data.avatar = baseUrl + resUser.data.avatar
@@ -90,10 +120,9 @@ router.beforeEach(async (to, from, next) => {
     } else {
       Toast.fail('你还未登录')
       // 跳转登录页
-      router.push('/login')
+      router.push('/login?_redirect=' + to.fullPath)
     }
   }
-  next()
 })
 
 export default router
